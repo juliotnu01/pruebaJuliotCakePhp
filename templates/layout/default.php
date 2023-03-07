@@ -46,6 +46,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <div class="top-nav-links">
             <a rel="noopener" href="/corporativos">Corporativos</a>
             <a rel="noopener" href="/user-corporativos">Usuarios</a>
+            <a rel="noopener" href="/pasos">Pasos</a>
         </div>
     </nav>
     <main class="main">
@@ -57,19 +58,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <footer>
     </footer>
 </body>
-<script>
-    var ws = new WebSocket("ws://localhost:3000");
-    ws.onopen = function(event) {
-        console.log("Conectado al servidor WebSocket");
-    };
 
-    ws.onmessage = function(event) {
-        console.log(JSON.parse(event.data.trim()))
-    };
-
-    ws.onclose = function(event) {
-        console.log("Desconectado del servidor WebSocket");
-    };
-</script>
 
 </html>

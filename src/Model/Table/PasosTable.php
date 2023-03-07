@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -88,5 +89,19 @@ class PasosTable extends Table
         $rules->add($rules->existsIn('user_corporativo_id', 'UserCorporativos'), ['errorField' => 'user_corporativo_id']);
 
         return $rules;
+    }
+    public function consultaEjemplo()
+    {
+        $query = $this->find();
+        $query->select([
+            'pasos' => $query->func()->count('pasos'),
+        ])
+            ->where([
+                'fecha >=' => '2023-01-01',
+                'fecha <=' => '2023-03-07',
+            ])
+            ->orderAsc('pasos');
+
+        return $query;
     }
 }

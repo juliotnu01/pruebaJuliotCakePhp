@@ -84,3 +84,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    var usuario_id = <?= $userCorporativo->id ?>;
+    var ws = new WebSocket("ws://localhost:3000");
+    ws.onopen = function(event) {
+        console.log("Conectado al servidor WebSocket");
+    };
+
+    ws.onmessage = function(event) {
+        var incomingMessage = JSON.parse(event.data.trim())
+        if (incomingMessage.id == usuario_id) {
+
+            alert('se han agregado registro de paso')
+        }
+
+
+    };
+
+    ws.onclose = function(event) {
+        console.log("Desconectado del servidor WebSocket");
+    };
+</script>

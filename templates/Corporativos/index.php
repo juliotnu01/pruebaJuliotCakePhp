@@ -28,6 +28,7 @@
                         <!-- <td><?= h($corporativo->modified) ?></td> -->
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $corporativo->id]) ?>
+                            <?= $this->Html->link(__('Estadistica'), ['action' => 'estadistica', $corporativo->id]) ?>
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $corporativo->id]) ?>
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $corporativo->id], ['confirm' => __('Are you sure you want to delete # {0}?', $corporativo->id)]) ?>
                         </td>

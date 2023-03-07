@@ -1,7 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
+
+use \App\Model\Table\UserCorporativosTable;
+
 
 /**
  * Corporativos Controller
@@ -11,6 +15,7 @@ namespace App\Controller;
  */
 class CorporativosController extends AppController
 {
+
     /**
      * Index method
      *
@@ -101,5 +106,24 @@ class CorporativosController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+    public function estadistica($id)
+    {
+        $query = $this->Corporativos->UserCorporativos->find()
+
+            ->contain(['Pasos' => function ($q) {
+                return $q->select([
+                    'pasos' => $q->count('pasos'),
+                    'metros' => $q->count('metros'),
+                    'user_corporativo_id',
+                ])->orderAsc('pasos')
+                    ->group('user_corporativo_id');
+            }])
+            ->where([
+                'created >=' => '2023-01-01',
+                'created <=' => '2023-03-07',
+            ]);
+        $pasos = $query->toArray(); // ->orderAsc('pasos');
+        $this->set(compact('pasos'));
     }
 }
