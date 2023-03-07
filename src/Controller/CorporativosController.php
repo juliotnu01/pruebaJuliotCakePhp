@@ -107,23 +107,78 @@ class CorporativosController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-    public function estadistica($id)
+    public function estadistica()
     {
-        $query = $this->Corporativos->UserCorporativos->find()
+        $data = $this->request->getData();
+        if ($this->request->is('post')) {
+            if ($data['tipo'] == 1) {
 
-            ->contain(['Pasos' => function ($q) {
-                return $q->select([
-                    'pasos' => $q->count('pasos'),
-                    'metros' => $q->count('metros'),
-                    'user_corporativo_id',
-                ])->orderAsc('pasos')
-                    ->group('user_corporativo_id');
-            }])
-            ->where([
-                'created >=' => '2023-01-01',
-                'created <=' => '2023-03-07',
-            ]);
-        $pasos = $query->toArray(); // ->orderAsc('pasos');
-        $this->set(compact('pasos'));
+                $query1 = $this->Corporativos->UserCorporativos->find()
+                    ->contain(['Pasos' => function ($q) {
+                        return $q->select([
+                            'pasos' => $q->count('pasos'),
+                            'metros' => $q->count('metros'),
+                            'user_corporativo_id',
+                        ])->orderAsc('pasos')
+                            ->group('user_corporativo_id');
+                    }])
+                    ->where([
+                        'created >=' => $data['fecha_inicio'] ?? date('yy-mm-dd'),
+                        'created <=' => $data['fecha_fin'] ?? date('yy-mm-dd'),
+                    ]);
+                $pasos1 = $query1->toArray();
+                $this->set(compact('pasos1'));
+            } elseif ($data['tipo'] == 2) {
+                $query1 = $this->Corporativos->UserCorporativos->find()
+                    ->contain(['Pasos' => function ($q) {
+                        return $q->select([
+                            'pasos' => $q->count('pasos'),
+                            'metros' => $q->count('metros'),
+                            'user_corporativo_id',
+                        ])->orderAsc('pasos')
+                            ->group('user_corporativo_id');
+                    }])
+                    ->where([
+                        'created =' => $data['fecha_inicio'] ?? date('yy-mm-dd'),
+                    ]);
+                $pasos2 = $query1->toArray();
+                $this->set(compact('pasos2'));
+            } elseif ($data['tipo'] == 3) {
+                $weekStart = $data['fecha_inicio'];
+                $weekEnd = $data['fecha_fin'];
+
+                $activities = $this->Corporativos->UserCorporativos->Pasos->find()
+                    ->select(['user_corporativo_id'])
+                    ->where(function ($exp, $q) use ($weekStart, $weekEnd) {
+                        return $exp->between('created', $weekStart, $weekEnd);
+                    })
+                    ->group(['user_corporativo_id'])
+                    ->having(function ($exp) {
+                        return $exp->gte('COUNT(*)', 3);
+                    })
+                    ->order(['user_corporativo_id']);
+
+                $pasos3 = $activities->toArray();
+                $this->set(compact('pasos3'));
+            }
+        } else {
+            $query1 = $this->Corporativos->UserCorporativos->find()
+                ->contain(['Pasos' => function ($q) {
+                    return $q->select([
+                        'pasos' => $q->count('pasos'),
+                        'metros' => $q->count('metros'),
+                        'user_corporativo_id',
+                    ])->orderAsc('pasos')
+                        ->group('user_corporativo_id');
+                }])
+                ->where([
+                    'created >=' => $data['fecha_inicio'] ?? date('yy-mm-dd'),
+                    'created <=' => $data['fecha_fin'] ?? date('yy-mm-dd'),
+                ]);
+
+
+            $pasos1 = $query1->toArray();
+            $this->set(compact('pasos1'));
+        }
     }
 }
